@@ -23,6 +23,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -31,11 +32,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.meucarrinhodecompras.components.CategoryCard
 import com.example.meucarrinhodecompras.components.ItemPill
 import com.example.meucarrinhodecompras.components.ProgressCard
 import com.example.meucarrinhodecompras.components.Header
 import com.example.meucarrinhodecompras.ui.theme.GreenPrimary
+import com.example.meucarrinhodecompras.viewModel.ShoppingViewModel
 import kotlin.jvm.java
 
 // MainActivity é a primeira tela que o Android chama quando o aplicativo inicia.
@@ -49,70 +52,30 @@ class MainActivity : ComponentActivity() {
         // inclusive atrás da barra de status.
         enableEdgeToEdge()
 
+        val viewModel: ShoppingViewModel by viewModels()
+
         setContent {
-            // Agora a lista de itens fica aqui na MainActivity, e não mais dentro da MainScreen.
-            // Isso foi necessário porque quem recebe o resultado da tela de adicionar item é a Activity.
-            // Então deixamos o estado "subir" para um nível acima, para que a tela inicial possa ser atualizada corretamente.
-            var items by remember {
-                mutableStateOf<List<Item>>(emptyList())
-            }
 
-            // Esse launcher é a forma moderna de abrir outra Activity esperando um resultado de volta.
-            // No nosso caso, ele abre a AddItemActivity e, quando ela fecha, verifica se algum item foi retornado.
-            val addItemLauncher = rememberLauncherForActivityResult(
-                contract = ActivityResultContracts.StartActivityForResult()
-            ) { result ->
+            val items by viewModel.items.collectAsStateWithLifecycle()
 
-                // RESULT_OK significa que a outra tela foi concluída com sucesso.
-                // Se o usuário apenas voltar sem confirmar, esse bloco não adiciona nada.
-                if (result.resultCode == Activity.RESULT_OK) {
-                    val data = result.data
 
-                    // Aqui pegamos os dados que a AddItemActivity enviou pela Intent.
-                    val itemName = data?.getStringExtra("item_name")
-                    val itemQuantity = data?.getStringExtra("item_quantity")
-                    val itemCategoryName = data?.getStringExtra("item_category")
 
-                    // Verificamos se os dados realmente vieram preenchidos antes de criar o item.
-                    if (
-                        !itemName.isNullOrBlank() &&
-                        !itemQuantity.isNullOrBlank() &&
-                        !itemCategoryName.isNullOrBlank()
-                    ) {
-                        // Como a categoria veio como texto, convertemos esse texto de volta para o enum Category.
-                        val category = Category.valueOf(itemCategoryName)
-
-                        // Criamos o novo item com base nas informações recebidas da tela de adicionar.
-                        val newItem = Item(
-                            name = itemName,
-                            category = category,
-                            quantityText = itemQuantity,
-                            checked = false
-                        )
-
-                        // Adiciona o novo item no final da lista atual.
-                        // Como "items" é um estado reativo, a interface atualiza automaticamente.
-                        items = items + newItem
-                    }
-                }
-            }
-
-            MainScreen(
-                items = items,
-
-                // Como a lista agora pertence à MainActivity, a MainScreen não altera mais os itens diretamente.
-                // Em vez disso, ela pede a alteração por meio dessa função.
-                onItemsChange = { updatedItems ->
-                    items = updatedItems
-                },
-
-                // Quando o usuário clica no botão de adicionar, criamos uma Intent para abrir a AddItemActivity.
-                // Em vez de usar startActivity direto, usamos o launcher para poder receber o item de volta.
-                onAddClick = {
-                    val intent = Intent(this, AddItemActivity::class.java)
-                    addItemLauncher.launch(intent)
-                }
-            )
+//            MainScreen(
+////                items = items,
+////
+////                // Como a lista agora pertence à MainActivity, a MainScreen não altera mais os itens diretamente.
+////                // Em vez disso, ela pede a alteração por meio dessa função.
+////                onItemsChange = { updatedItems ->
+////                    items = updatedItems
+////                },
+////
+////                // Quando o usuário clica no botão de adicionar, criamos uma Intent para abrir a AddItemActivity.
+////                // Em vez de usar startActivity direto, usamos o launcher para poder receber o item de volta.
+////                onAddClick = {
+////                    val intent = Intent(this, AddItemActivity::class.java)
+////                    addItemLauncher.launch(intent)
+////                }
+//            )
         }
     }
 }
@@ -120,7 +83,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainScreen(
     items: List<Item>,
-    onItemsChange: (List<Item>) -> Unit,
+    toggleItem: (Item) -> Unit,
     onAddClick: () -> Unit
 ) {
     // Essa variável guarda quais categorias estão abertas (expandidas).
@@ -216,17 +179,7 @@ fun MainScreen(
                                 // não alteramos mais a lista localmente aqui dentro.
                                 // Em vez disso, geramos uma nova lista atualizada e enviamos para a MainActivity
                                 // por meio da função onItemsChange.
-                                onToggle = {
-                                    onItemsChange(
-                                        items.map { currentItem ->
-                                            if (currentItem == item) {
-                                                currentItem.copy(checked = !currentItem.checked)
-                                            } else {
-                                                currentItem
-                                            }
-                                        }
-                                    )
-                                }
+                                onToggle = { toggleItem(item) }
                             )
                         }
                     }
