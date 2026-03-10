@@ -330,15 +330,20 @@ private fun AddCategoryItem(
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                category.icon()
+                Icon(
+                    painter = painterResource(category.iconRes),
+                    contentDescription = category.title,
+                    tint = category.mainColor,
+                    modifier = Modifier.size(34.dp)
+                )
             }
         }
 
         Spacer(modifier = Modifier.height(10.dp))
 
         Text(
-            text = category.title,
-            color = if (selected) category.mainColor else Color(0xFF1B1B1B),
+            text = shortCategoryTitle(category),
+            color = if (selected) category.mainColor else Color.Black,
             fontSize = 14.sp,
             fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal
         )
@@ -365,6 +370,16 @@ private fun CircleActionButton(
     }
 }
 
+private fun shortCategoryTitle(category: Category): String {
+    return when (category) {
+        Category.FRUITS -> "Hortaliças"
+        Category.DAIRY -> "Laticínios"
+        Category.CLEANING -> "Limpeza"
+        Category.BAKERY -> "Padaria"
+        Category.MEAT -> "Carnes"
+        Category.SNACKS -> "Lanches"
+    }
+}
 
 @Preview
 @Composable

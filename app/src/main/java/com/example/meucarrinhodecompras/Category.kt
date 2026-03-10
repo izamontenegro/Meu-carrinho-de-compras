@@ -20,7 +20,7 @@ enum class Category(
     val mainColor: Color,
     val backgroundColor: Color,
     val itemBorderColor: Color,
-    val icon: @Composable () -> Unit
+    val iconRes: Int
 ) {
 
     FRUITS(
@@ -28,13 +28,7 @@ enum class Category(
         mainColor = GreenPrimary,
         backgroundColor = GreenHighlight,
         itemBorderColor = GreenSecondary,
-        icon = {
-            Icon(
-                painter = painterResource(R.drawable.lucide_leaf),
-                contentDescription = null,
-                tint = Color.White
-            )
-        }
+        iconRes = R.drawable.lucide_leaf
     ),
 
     DAIRY(
@@ -42,13 +36,7 @@ enum class Category(
         mainColor = OrangePrimary,
         backgroundColor = OrangeHighlight,
         itemBorderColor = OrangeSecondary,
-        icon = {
-            Icon(
-                painter = painterResource(R.drawable.lucide_egg),
-                contentDescription = null,
-                tint = Color.White
-            )
-        }
+        iconRes = R.drawable.lucide_egg
     ),
 
     CLEANING(
@@ -56,13 +44,7 @@ enum class Category(
         mainColor = BluePrimary,
         backgroundColor = BlueHighlight,
         itemBorderColor = BlueSecondary,
-        icon = {
-            Icon(
-                painter = painterResource(R.drawable.lucide_bubbles),
-                contentDescription = null,
-                tint = Color.White
-            )
-        }
+        iconRes = R.drawable.lucide_bubbles
     ),
 
     BAKERY(
@@ -70,13 +52,7 @@ enum class Category(
         mainColor = BrownPrimary,
         backgroundColor = BrownHighLight,
         itemBorderColor = BrownSecondary,
-        icon = {
-            Icon(
-                painter = painterResource(R.drawable.lucide_croissant),
-                contentDescription = null,
-                tint = Color.White
-            )
-        }
+        iconRes = R.drawable.lucide_croissant
     ),
 
     MEAT(
@@ -84,13 +60,7 @@ enum class Category(
         mainColor = RedPrimary,
         backgroundColor = RedHighlight,
         itemBorderColor = RedSecondary,
-        icon = {
-            Icon(
-                painter = painterResource(R.drawable.lucide_beef),
-                contentDescription = null,
-                tint = Color.White
-            )
-        }
+        iconRes = R.drawable.lucide_beef
     ),
 
     SNACKS(
@@ -98,12 +68,6 @@ enum class Category(
         mainColor = PurplePrimary,
         backgroundColor = PurpleHighlight,
         itemBorderColor = PurplenSecondary,
-        icon = {
-            Icon(
-                painter = painterResource(R.drawable.lucide_donut),
-                contentDescription = null,
-                tint = Color.White
-            )
-        }
+        iconRes = R.drawable.lucide_donut
     )
 }
