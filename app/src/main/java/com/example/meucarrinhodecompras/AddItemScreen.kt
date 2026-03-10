@@ -44,7 +44,6 @@ import com.example.meucarrinhodecompras.ui.theme.LightBlueHighlight
 import com.example.meucarrinhodecompras.ui.theme.LightBluePrimary
 import com.example.meucarrinhodecompras.ui.theme.LightBlueSecondary
 
-
 @Composable
 fun AddItemScreen(
     onBackClick: () -> Unit,
