@@ -33,10 +33,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.meucarrinhodecompras.components.CategoryCard
 import com.example.meucarrinhodecompras.components.ItemPill
 import com.example.meucarrinhodecompras.components.ProgressCard
 import com.example.meucarrinhodecompras.components.Header
+import com.example.meucarrinhodecompras.navigation.Routes
 import com.example.meucarrinhodecompras.ui.theme.GreenPrimary
 import com.example.meucarrinhodecompras.viewModel.ShoppingViewModel
 import kotlin.jvm.java
@@ -58,6 +62,36 @@ class MainActivity : ComponentActivity() {
 
             val items by viewModel.items.collectAsStateWithLifecycle()
 
+            val navController = rememberNavController()
+
+            NavHost(
+                navController = navController,
+                startDestination = Routes.MAIN
+            ) {
+                composable(Routes.MAIN) {
+                    MainScreen(
+                        items = items,
+                        toggleItem = { item ->
+                            viewModel.toggleItem(item)
+                        },
+                        onAddClick = {
+                            navController.navigate(Routes.ADD_MAIN)
+                        }
+                    )
+                }
+
+                composable(Routes.ADD_MAIN) {
+                    AddItemScreen(
+                        onBackClick = {
+                            navController.popBackStack()
+                        },
+                        onConfirmClick = { item ->
+                            viewModel.addItem(item)
+                            navController.popBackStack()
+                        }
+                    )
+                }
+            }
 
 
 //            MainScreen(

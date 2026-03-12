@@ -50,30 +50,6 @@ import com.example.meucarrinhodecompras.ui.theme.LightBlueHighlight
 import com.example.meucarrinhodecompras.ui.theme.LightBluePrimary
 import com.example.meucarrinhodecompras.ui.theme.LightBlueSecondary
 
-class AddItemActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        enableEdgeToEdge()
-
-        setContent {
-            AddItemScreen(
-                onBackClick = { finish() },
-                onConfirmClick = { item ->
-                    val resultIntent = Intent().apply {
-                        putExtra("item_name", item.name)
-                        putExtra("item_quantity", item.quantityText)
-                        putExtra("item_category", item.category.name)
-                    }
-
-                    setResult(Activity.RESULT_OK, resultIntent)
-                    finish()
-                }
-            )
-        }
-    }
-}
-
 @Composable
 fun AddItemScreen(
     onBackClick: () -> Unit,
